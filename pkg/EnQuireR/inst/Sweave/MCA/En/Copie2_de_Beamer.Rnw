@@ -1,0 +1,771 @@
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+% * * * * * * * * * * * * * * * * * ENTETE  * * * * * * * * * * * * * * * * * *
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+\documentclass[9pt]{beamer}
+
+% * * * * * * * * * * * * * * PACKAGES CLASSIQUES * * * * * * * * * * * * * * *
+\usepackage[T1]{fontenc} 
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{xcolor}  
+\usepackage{graphicx}
+\usepackage{verbatim}
+\mode<presentation>
+
+% * * * * * * * * * * * * * * *  ANIMATIONS * * * * * * * * * * * * * * * * * *
+\usepackage{animate}
+
+% * * * * * * * * * * * * * * CHOIX DU THEME  * * * * * * * * * * * * * * * * *
+\usepackage{beamerthemeSzeged}                                % un theme voir .../beamer/theme/
+
+% * * * * * * * * * * * * * LA BARRE DE NAVIGATION  * * * * * * * * * * * * * *
+% commenter la ligne pour supprimer un √©l√©ments
+\setbeamertemplate{navigation symbols}{%
+	\insertslidenavigationsymbol%
+	\insertframenavigationsymbol%
+	\insertsubsectionnavigationsymbol%
+	\insertsectionnavigationsymbol%
+	\insertdocnavigationsymbol%
+	\insertbackfindforwardnavigationsymbol%
+}
+
+% * * * * * * * * * * * * * * * * * TEXTPOS * * * * * * * * * * * * * * * * * *
+\usepackage[absolute,showboxes,overlay]{textpos}
+\TPshowboxestrue                                              % affiche le contour des textblocks
+\TPshowboxesfalse                                             % fait disparaitre le contour des textblocks
+\textblockorigin{2mm}{8mm}                                    % origine des positions pour placer les textblocks
+
+% * * * * * * * * * * * * * * * * * PICTURE * * * * * * * * * * * * * * * * * *
+\usepackage{picture}
+\setlength{\unitlength}{1mm}                                  % d√©finition de l'unit√©
+
+% * * * * * * * * * * * * * * *  LES BLOCKS * * * * * * * * * * * * * * * * * *
+\setbeamertemplate{blocks}[rounded][shadow=true]              % pour des blocks arrondis
+\setbeamercolor{block body alerted}{fg=white,bg=monred}       % ecrit en blanc sur fond rouge
+\setbeamercolor{block body}{fg=white,bg=monbleu}              % ecrit en blanc sur fond bleu
+
+% * * * * * * * * * * * * * DETAILS DE STYLE  * * * * * * * * * * * * * * * * *
+\beamertemplatetransparentcovered                             % Fait afficher l'ensemble du frame en peu lisible (gris clair) d√®s l'ouverture
+
+\setbeamertemplate{itemize item}[ball]                        % style item
+\setbeamertemplate{itemize subitem}[triangle]                 % style subitem
+
+\renewcommand{\arraystretch}{1.4}                             % espacement des cellules du tableau 
+
+\definecolor{monred}{HTML}{9D0909}                            % un rouge
+\definecolor{monbleu}{HTML}{000066}                           % un bleu
+\definecolor{monvert}{HTML}{00AE00}                           % un vert
+
+\renewcommand{\footnoterule}{}                                % supprime le trait au dessus des footnotes
+\renewcommand{\thefootnote}{\alph{footnote}}                  % num√©rotation par des lettres
+
+% * * * * * * * * * * * * * *  PAGES DE TITRE * * * * * * * * * * * * * * * * *
+\title[EnQuireR]{The EnQuireR project}
+\author[...]{...}
+\institute{Agrocampus Ouest}
+\date{February 2009}
+
+
+% * * * * * * * * * * * * * PARAMETRES POUR PDF * * * * * * * * * * * * * * * *
+\hypersetup{% Modifiez la valeur des champs suivants
+	pdfauthor   = {auteur},%
+	pdftitle    = {Titre},%
+	pdfsubject  = {Sujet},%
+	pdfkeywords = {Mots cl√©s},%
+	pdfcreator  = {PDFLaTeX},%
+	pdfproducer = {PDFLaTeX},%
+	pdfpagemode = {FullScreen}%                              			% ouvre le pdf directement en plein √©cran
+}
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+% * * * * * * * * * * * * * *  DEBUT DOCUMENT * * * * * * * * * * * * * * * * *
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+\usepackage{Sweave}
+
+\begin{document}
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+\begin{frame}
+
+\frametitle{ENMCA}
+
+\tableofcontents
+
+\end{frame}
+
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 1) MCA
+
+\section{Multiple Correspondence Analysis}
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+\begin{frame}
+
+\frametitle{ENMCA}
+
+\tableofcontents[currentsection]
+
+\end{frame}
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * Correspondence map (individuals)
+
+\subsection{Correspondence map on the two first axes}
+
+\begin{frame}
+\frametitle{ENMCA : Graph of individuals}
+
+\begin{figure}[h!tbp]
+\centering
+\includegraphics[width=2.2in]{MCAplotind.pdf}
+\caption{Correspondence map on individuals}
+\end{figure}
+
+\end{frame}
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * Correspondence map (categories)
+
+\begin{frame}
+\frametitle{ENMCA : Graph of categories}
+
+\begin{figure}[h!tbp]
+\centering
+\includegraphics[width=2.2in]{MCAplotvar.pdf}
+\caption{Correspondence map on categories}
+\end{figure}
+
+\end{frame}
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ENlisib
+
+\subsection{ENlisib}
+
+\begin{frame}
+\frametitle{ENlisib}
+
+\begin{figure}[h!tbp]
+\centering
+\includegraphics[width=2.2in]{Lisib.pdf}
+\caption{Correspondence map where only the selected individuals and categories are displayed}
+\end{figure}
+
+\end{frame}
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+<<results=tex,echo=FALSE>>=
+res.dimdesc=dimdesc(res.acm)
+var.dim1=res.dimdesc$`Dim 1`$quali
+var.dim2=res.dimdesc$`Dim 2`$quali
+mod.dim1=res.dimdesc$`Dim 1`$category
+mod.dim2=res.dimdesc$`Dim 2`$category
+mod.pos.dim1=mod.dim1[mod.dim1[,1]>0,]
+mod.neg.dim1=mod.dim1[mod.dim1[,1]<0,]
+mod.pos.dim2=mod.dim2[mod.dim2[,1]>0,]
+mod.neg.dim2=mod.dim2[mod.dim2[,1]<0,]
+@
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * Eigenvalues
+
+\subsection{Eigenvalues}
+
+\begin{frame}
+\frametitle{ENMCA : Eigenvalues for the five first axes}
+
+<<results=tex,echo=FALSE>>=
+eigen1=res.acm$eig[1,1]
+eigen2=res.acm$eig[2,1]
+eigen3=res.acm$eig[3,1]
+eigen4=res.acm$eig[4,1]
+eigen5=res.acm$eig[5,1]
+eig1=res.acm$eig[1,2]
+eig2=res.acm$eig[2,2]
+eig3=res.acm$eig[3,2]
+eig4=res.acm$eig[4,2]
+eig5=res.acm$eig[5,2]
+@
+
+\begin{table}
+	\begin{tabular}{c|c|c}
+	\hline axis & eigenvalues & percentage of variance\\ 
+	\hline 1 & \Sexpr{round(eigen1,5)} & \Sexpr{round(eig1,2)}\% \\
+	\hline 2 & \Sexpr{round(eigen2,5)} & \Sexpr{round(eig2,2)}\% \\
+	\hline 3 & \Sexpr{round(eigen3,5)} & \Sexpr{round(eig3,2)}\% \\
+	\hline 4 & \Sexpr{round(eigen4,5)} & \Sexpr{round(eig4,2)}\% \\
+	\hline 5 & \Sexpr{round(eigen5,5)} & \Sexpr{round(eig5,2)}\% \\
+	\hline
+	\end{tabular}
+	\caption{Eigenvalues for the five first axes}
+\end{table}
+
+\end{frame}
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * Description of axes
+
+\subsection{ENMCA : Description of axes}
+
+<<results=tex,echo=FALSE>>=
+#partie positive
+nbmodpos=length(row.names(mod.pos.dim1))
+#ord.mod.neg.dim1=mod.neg.dim1[order(mod.neg.dim1[,2],decreasing=FALSE),]
+#ord.mod.neg.dim2=mod.neg.dim1[order(mod.neg.dim2[,2],decreasing=FALSE),]
+#on en veut 10 par page
+#si nbmodpos<10 une seule page
+#si nbmodpos multiple de 10 c'est simple
+#sinon +1
+
+############################################################################### Axis 1
+
+if (nbmodpos<10){
+cat("\\begin{frame}[fragile]\n\n")
+cat("\\frametitle{Decription of the first axis : Positive side}\n")
+	cat("The following modalities are meaningful for the first axis (postive side):\n")
+	cat("\\begin{itemize}\n")
+for (i in 1:nbmodpos){
+	cat("\\normalsize\n\n")
+	cat("\\item \\begin{verbatim} ",row.names(mod.pos.dim1)[i],"\\end{verbatim}\n\n")
+	cat("\\tiny\n\n")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n\n")
+                    }
+
+###############################################################################
+
+if (nbmodpos>10){
+
+###############################################################################
+
+if ((nbmodpos/10-round(nbmodpos/10))==0){
+for (nbpage in 1:(nbmodpos/10)){
+
+cat("\\begin{frame}[fragile]\n\n")
+cat("\\frametitle{Decription of the first axis : Positive side (",nbpage,"/",(nbmodpos/10),")}\n")
+	cat("The following modalities are meaningful for the first axis (postive side):\n")
+	cat("\\begin{itemize}\n")
+for (i in ((nbpage-1)*10+1):((nbpage-1)*10+10)){
+	cat("\\normalsize\n\n")
+	cat("\\item \\begin{verbatim} ",row.names(mod.pos.dim1)[i],"\\end{verbatim}\n\n")
+	cat("\\tiny\n\n")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n\n")
+}
+}
+
+###############################################################################
+
+if ((nbmodpos/10-round(nbmodpos/10))!=0){
+for (nbpage in 1:(nbmodpos/10)){
+
+cat("\\begin{frame}[fragile]\n\n")
+cat("\\frametitle{Decription of the first axis : Positive side (",nbpage,"/",trunc(nbmodpos/10)+1,")}\n")
+	cat("The following modalities are meaningful for the first axis (postive side):\n")
+	cat("\\begin{itemize}\n")
+for (i in ((nbpage-1)*10+1):((nbpage-1)*10+10)){
+	cat("\\normalsize\n\n")
+	cat("\\item \\begin{verbatim} ",row.names(mod.pos.dim1)[i],"\\end{verbatim}\n\n")
+	cat("\\tiny\n\n")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n\n")
+}
+
+cat("\\begin{frame}[fragile]\n\n")
+cat("\\frametitle{Decription of the first axis : Positive side (",trunc(nbmodpos/10)+1,"/",trunc(nbmodpos/10)+1,")}\n")
+	cat("The following modalities are meaningful for the first axis (postive side):\n")
+	cat("\\begin{itemize}\n")
+for (i in (nbpage*10+1):nbmodpos){
+	cat("\\normalsize\n\n")
+	cat("\\item \\begin{verbatim} ",row.names(mod.pos.dim1)[i],"\\end{verbatim}\n\n")
+	cat("\\tiny\n\n")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n\n")
+
+
+}
+}
+cat("\n\n")
+############################################################################### Axis 1 (NEGATIVE)
+
+nbmodpos=length(row.names(mod.neg.dim1))
+mod.neg.dim1=mod.neg.dim1[order(mod.neg.dim1[,2],decreasing=FALSE),]
+
+
+if (nbmodpos<10){
+cat("\\begin{frame}[fragile]\n\n")
+cat("\\frametitle{Decription of the first axis : Negative side}\n")
+	cat("The following modalities are meaningful for the first axis (negative side):\n")
+	cat("\\begin{itemize}\n")
+for (i in 1:nbmodpos){
+	cat("\\normalsize\n\n")
+	cat("\\item \\begin{verbatim} ",row.names(mod.neg.dim1)[i],"\\end{verbatim}\n\n")
+	cat("\\tiny\n\n")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n\n")
+                    }
+
+###############################################################################
+
+if (nbmodpos>10){
+
+###############################################################################
+
+if ((nbmodpos/10-round(nbmodpos/10))==0){
+for (nbpage in 1:(nbmodpos/10)){
+
+cat("\\begin{frame}[fragile]\n\n")
+cat("\\frametitle{Decription of the first axis : Negative side (",nbpage,"/",(nbmodpos/10),")}\n")
+	cat("The following modalities are meaningful for the first axis (negative side):\n")
+	cat("\\begin{itemize}\n")
+for (i in ((nbpage-1)*10+1):((nbpage-1)*10+10)){
+	cat("\\normalsize\n\n")
+	cat("\\item \\begin{verbatim} ",row.names(mod.neg.dim1)[i],"\\end{verbatim}\n\n")
+	cat("\\tiny\n\n")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n\n")
+}
+}
+
+###############################################################################
+
+if ((nbmodpos/10-round(nbmodpos/10))!=0){
+for (nbpage in 1:(nbmodpos/10)){
+
+cat("\\begin{frame}[fragile]\n\n")
+cat("\\frametitle{Decription of the first axis : Negative side (",nbpage,"/",trunc(nbmodpos/10)+1,")}\n")
+	cat("The following modalities are meaningful for the first axis (negative side):\n")
+	cat("\\begin{itemize}\n")
+for (i in ((nbpage-1)*10+1):((nbpage-1)*10+10)){
+	cat("\\normalsize\n\n")
+	cat("\\item \\begin{verbatim} ",row.names(mod.neg.dim1)[i],"\\end{verbatim}\n\n")
+	cat("\\tiny\n\n")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n\n")
+}
+
+cat("\\begin{frame}[fragile]\n\n")
+cat("\\frametitle{Decription of the first axis : Negative side (",trunc(nbmodpos/10)+1,"/",trunc(nbmodpos/10)+1,")}\n")
+	cat("The following modalities are meaningful for the first axis (negative side):\n")
+	cat("\\begin{itemize}\n")
+for (i in (nbpage*10+1):nbmodpos){
+	cat("\\normalsize\n\n")
+	cat("\\item \\begin{verbatim} ",row.names(mod.neg.dim1)[i],"\\end{verbatim}\n\n")
+	cat("\\tiny\n\n")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n\n")
+
+
+}
+}
+
+
+@
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * Description of axes
+
+<<results=tex,echo=FALSE>>=
+#partie positive
+nbmodpos=length(row.names(mod.pos.dim2))
+#on en veut 10 par page
+#si nbmodpos<10 une seule page
+#si nbmodpos multiple de 10 c'est simple
+#sinon +1
+
+###############################################################################
+
+if (nbmodpos<10){
+cat("\\begin{frame}[fragile]\n\n")
+cat("\\frametitle{Decription of the second axis : Positive side}\n")
+	cat("The following modalities are meaningful for the second axis (postive side):\n")
+	cat("\\begin{itemize}\n")
+for (i in 1:nbmodpos){
+	cat("\\normalsize\n\n")
+	cat("\\item \\begin{verbatim} ",row.names(mod.pos.dim2)[i],"\\end{verbatim}\n\n")
+	cat("\\tiny\n\n")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n\n")
+                    }
+ 
+###############################################################################
+
+if (nbmodpos>10){
+
+###############################################################################
+
+if ((nbmodpos/10-round(nbmodpos/10))==0){
+for (nbpage in 1:(nbmodpos/10)){
+
+cat("\\begin{frame}[fragile]\n\n")
+cat("\\frametitle{Decription of the second axis : Positive side (",nbpage,"/",(nbmodpos/10),")}\n")
+	cat("The following modalities are meaningful for the second axis (postive side):\n")
+	cat("\\begin{itemize}\n")
+for (i in ((nbpage-1)*10+1):((nbpage-1)*10+10)){
+	cat("\\normalsize\n\n")
+	cat("\\item \\begin{verbatim} ",row.names(mod.pos.dim2)[i],"\\end{verbatim}\n\n")
+	cat("\\tiny\n\n")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n\n")
+}
+}
+
+###############################################################################
+
+if ((nbmodpos/10-round(nbmodpos/10))!=0){
+for (nbpage in 1:(nbmodpos/10)){
+
+cat("\\begin{frame}[fragile]\n\n")
+cat("\\frametitle{Decription of the second axis : Positive side (",nbpage,"/",trunc(nbmodpos/10)+1,")}\n")
+	cat("The following modalities are meaningful for the second axis (postive side):\n")
+	cat("\\begin{itemize}\n")
+for (i in ((nbpage-1)*10+1):((nbpage-1)*10+10)){
+	cat("\\normalsize\n\n")
+	cat("\\item \\begin{verbatim} ",row.names(mod.pos.dim2)[i],"\\end{verbatim}\n\n")
+	cat("\\tiny\n\n")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n\n")
+}
+
+cat("\\begin{frame}[fragile]\n\n")
+	cat("The following modalities are meaningful for the second axis (postive side):\n")
+	cat("\\frametitle{Decription of the second axis : Positive side (",trunc(nbmodpos/10)+1,"/",trunc(nbmodpos/10)+1,")}\n")
+	cat("\\begin{itemize}\n")
+for (i in (nbpage*10+1):nbmodpos){
+	cat("\\normalsize\n\n")
+	cat("\\item \\begin{verbatim} ",row.names(mod.pos.dim2)[i],"\\end{verbatim}\n\n")
+	cat("\\tiny\n\n")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n\n")
+
+
+}
+}
+cat("\n\n")
+############################################################################### AXIS 2 (NEGATIVE)
+
+nbmodpos=length(row.names(mod.neg.dim2))
+mod.neg.dim2=mod.neg.dim2[order(mod.neg.dim2[,2],decreasing=FALSE),]
+
+
+if (nbmodpos<10){
+cat("\\begin{frame}[fragile]\n\n")
+cat("\\frametitle{Decription of the second axis : Negative side}\n")
+	cat("The following modalities are meaningful for the second axis (negative side):\n")
+	cat("\\begin{itemize}\n")
+for (i in 1:nbmodpos){
+	cat("\\normalsize\n\n")
+	cat("\\item \\begin{verbatim} ",row.names(mod.neg.dim2)[i],"\\end{verbatim}\n\n")
+	cat("\\tiny\n\n")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n\n")
+                    }
+
+###############################################################################
+
+if (nbmodpos>10){
+
+###############################################################################
+
+if ((nbmodpos/10-round(nbmodpos/10))==0){
+for (nbpage in 1:(nbmodpos/10)){
+
+cat("\\begin{frame}[fragile]\n\n")
+cat("\\frametitle{Decription of the second axis : Negative side (",nbpage,"/",(nbmodpos/10),")}\n")
+	cat("The following modalities are meaningful for the first axis (negative side):\n")
+	cat("\\begin{itemize}\n")
+for (i in ((nbpage-1)*10+1):((nbpage-1)*10+10)){
+	cat("\\normalsize\n\n")
+	cat("\\item \\begin{verbatim} ",row.names(mod.neg.dim2)[i],"\\end{verbatim}\n\n")
+	cat("\\tiny\n\n")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n\n")
+}
+}
+
+###############################################################################
+
+if ((nbmodpos/10-round(nbmodpos/10))!=0){
+for (nbpage in 1:(nbmodpos/10)){
+
+cat("\\begin{frame}[fragile]\n\n")
+cat("\\frametitle{Decription of the second axis : Negative side (",nbpage,"/",trunc(nbmodpos/10)+1,")}\n")
+	cat("The following modalities are meaningful for the second axis (negative side):\n")
+	cat("\\begin{itemize}\n")
+for (i in ((nbpage-1)*10+1):((nbpage-1)*10+10)){
+	cat("\\normalsize\n\n")
+	cat("\\item \\begin{verbatim} ",row.names(mod.neg.dim2)[i],"\\end{verbatim}\n\n")
+	cat("\\tiny\n\n")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n\n")
+}
+
+cat("\\begin{frame}[fragile]\n\n")
+cat("\\frametitle{Decription of the second axis : Negative side (",trunc(nbmodpos/10)+1,"/",trunc(nbmodpos/10)+1,")}\n")
+	cat("The following modalities are meaningful for the second axis (negative side):\n")
+	cat("\\begin{itemize}\n")
+for (i in (nbpage*10+1):nbmodpos){
+	cat("\\normalsize\n\n")
+	cat("\\item \\begin{verbatim} ",row.names(mod.neg.dim2)[i],"\\end{verbatim}\n\n")
+	cat("\\tiny\n\n")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n\n")
+
+
+}
+}
+
+
+@
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 2) Typology of individuals
+
+\section{Typology of individuals}
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+\begin{frame}
+
+\frametitle{ENMCA}
+
+\tableofcontents[currentsection]
+
+\end{frame}
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * Graphs
+
+\subsection{Graphs}
+
+\begin{frame}
+
+\frametitle{ENMCA : Clustering analysis}
+
+\begin{figure}[h!tbp]
+\centering
+\includegraphics[width=2.2in]{Clustplot.pdf}
+\caption{A number of clusters is chosen}
+\end{figure}
+
+\end{frame}
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * Graphs 
+
+\begin{frame}
+\frametitle{ENMCA : Individuals sorted by clusters}
+
+\begin{figure}[h!tbp]
+\centering
+\includegraphics[width=2.2in]{MCAplotindclasse.pdf}
+\caption{Correspondence map displaying clusters}
+\end{figure}
+
+\end{frame}
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ENdensity
+
+\subsection{ENdensity}
+
+\begin{frame}
+\frametitle{ENdensity}
+
+\begin{figure}[h!tbp]
+\centering
+\includegraphics[width=2.2in]{Density.pdf}
+\caption{Levelling curves around each cluster}
+\end{figure}
+
+\end{frame}
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ENellipse
+
+\subsection{ENellipse}
+
+\begin{frame}
+\frametitle{ENellipse}
+
+\begin{figure}[h!tbp]
+\centering
+\includegraphics[width=2.2in]{Ellipse.pdf}
+\caption{Confidence ellipses around each cluster}
+\end{figure}
+
+\end{frame}
+
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * Barplots for the clusters
+
+\subsection{Cluster characterization with the variables}
+
+\begin{frame}
+\begin{figure}
+\centering
+\includegraphics[width=2.2in]{barplotgr.pdf}
+\caption{Number of individuals by cluster}
+\end{figure}
+
+\end{frame}
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+<<results=tex,echo=FALSE>>=
+if(length(rownames(catdes$test.chi))>10){
+for (i in 1:10){
+	cat("\\begin{frame}[fragile]\n\n")
+	cat("\\frametitle{Number of individuals by cluster for the variable ",rownames(catdes$test.chi)[i],"}\n\n")
+	cat("\\begin{figure}\n\n")
+	cat("\\centering\n\n")
+	cat("\\includegraphics[width=2.2in]{barvarclus",i,".pdf}\n\n",sep="")
+	cat("%\\caption{Variable ",rownames(catdes$test.chi)[i],"}\n\n",sep="")
+	cat("\\end{figure}\n\n")
+	cat("\\end{frame}\n\n")
+
+}
+}else{
+for (i in 1:length(rownames(catdes$test.chi))){
+	cat("\\begin{frame}[fragile]\n\n")
+	cat("\\frametitle{Number of individuals by cluster for the variable ",rownames(catdes$test.chi)[i],"}\n\n")
+	cat("\\begin{figure}\n\n")
+	cat("\\centering\n\n")
+	cat("\\includegraphics[width=2.2in]{barvarclus",i,".pdf}\n\n",sep="")
+	cat("%\\caption{Variable ",rownames(catdes$test.chi)[i],"}\n\n",sep="")
+	cat("\\end{figure}\n\n")
+	cat("\\end{frame}\n\n")
+	
+}
+}
+@
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * Description of clusters
+
+\subsection{Description of clusters}
+
+<<results=tex,echo=FALSE>>=
+for (i in 1:nlevels(dataset2[,ncol(dataset2)])){
+#for (i in 1:4){
+mod.pos.classe=rownames(catdes$category[[i]][catdes$category[[i]][,5]>0,])
+nbc=length(mod.pos.classe)
+#mod.pos.classe nombre de modalitÈs pour la classe i
+#je teste si multiple de 5
+
+if (nbc>4){
+#######################################################
+if ((nbc/5-round(nbc/5))==0){
+#nbpage varie de 1 ‡ mod.pos.classe/5
+for (nbpage in 1:(nbc/5)){
+
+cat("\\begin{frame}\n")
+cat("\\frametitle{Decription of the cluster ",i," (",nbpage,"/",(nbc/5),")}\n")
+	cat("The cluster ",i," includes the individuals possessing the following categories:\n")
+	cat("\\begin{itemize}\n")
+for (j in ((nbpage-1)*5+1):((nbpage-1)*5+5)){
+	cat("\\normalsize\n\n")
+	cat("\\item \\verb£",mod.pos.classe[j],"£\n\n")
+	cat("\\tiny\n\n")
+	cat(round(catdes$category[[i]][mod.pos.classe[j],3]*100,2),"~\\% of the individuals possess this category in the global population versus ",round(catdes$category[[i]][mod.pos.classe[j],2]*100,2),"\\% of the individuals within cluster ",i,"; \\\\",round(catdes$category[[i]][mod.pos.classe[j],1]*100,2),"~\\% individuals possessing this category belong to cluster ",i,"\n",sep="")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n")
+                                    }
+}
+#############################################################
+if ((nbc/5-round(nbc/5))!=0){
+#nbpage varie de 1 ‡ mod.pos.classe/5
+for (nbpage in 1:(nbc/5)){
+
+cat("\\begin{frame}\n")
+cat("\\frametitle{Decription of the cluster ",i," (",nbpage,"/",trunc(nbc/5)+1,")}\n")
+	cat("The following modalities are meaningful for the cluster ",i,":\n")
+	cat("\\begin{itemize}\n")
+for (j in ((nbpage-1)*5+1):((nbpage-1)*5+5)){
+	cat("\\normalsize\n\n")
+	cat("\\item \\verb£",mod.pos.classe[j],"£\n\n")
+	cat("\\tiny\n\n")
+	cat(round(catdes$category[[i]][mod.pos.classe[j],3]*100,2),"~\\% of the individuals possess this category in the global population versus ",round(catdes$category[[i]][mod.pos.classe[j],2]*100,2),"\\% of the individuals within cluster ",i,"; \\\\",round(catdes$category[[i]][mod.pos.classe[j],1]*100,2),"~\\% individuals possessing this category belong to cluster ",i,"\n",sep="")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n")
+                                    }
+cat("\\begin{frame}\n")
+cat("\\frametitle{Decription of the cluster ",i," (",trunc(nbc/5)+1,"/",trunc(nbc/5)+1,")}\n")
+	cat("The following modalities are meaningful for the cluster ",i,":\n")
+	cat("\\begin{itemize}\n")
+for (j in (nbpage*5+1):nbc){
+	cat("\\normalsize\n\n")
+	cat("\\item \\verb£",mod.pos.classe[j],"£\n\n")
+	cat("\\tiny\n\n")
+	cat(round(catdes$category[[i]][mod.pos.classe[j],3]*100,2),"~\\% of the individuals possess this category in the global population versus ",round(catdes$category[[i]][mod.pos.classe[j],2]*100,2),"\\% of the individuals within cluster ",i,"; \\\\",round(catdes$category[[i]][mod.pos.classe[j],1]*100,2),"~\\% individuals possessing this category belong to cluster ",i,"\n",sep="")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n")
+                                    
+}
+
+#si mod.pos.classe/5-round(mod.pos.classe/5)>0
+#nbpage varie de 1 ‡ mod.pos.classe/5+1
+
+#je fais la mÍme chose qu'en haut for nbpage varie de 1 ‡ mod.pos.classe/5
+#cas particulier for nbpage=mod.pos.classe/5+1
+#for (j in (nbpage-1)*5+1:mod.pos.classe)
+#############################################################
+}
+if (nbc<5){
+
+cat("\\begin{frame}\n")
+cat("\\frametitle{Decription of the cluster ",i,"}\n")
+	cat("The following modalities are meaningful for the cluster ",i,":\n")
+	cat("\\begin{itemize}\n")
+for (j in 1:nbc){
+	cat("\\normalsize\n\n")
+	cat("\\item \\verb£",mod.pos.classe[j],"£\n\n")
+	cat("\\tiny\n\n")
+	cat(round(catdes$category[[i]][mod.pos.classe[j],3]*100,2),"~\\% of the individuals possess this category in the global population versus ",round(catdes$category[[i]][mod.pos.classe[j],2]*100,2),"\\% of the individuals within cluster ",i,"; \\\\",round(catdes$category[[i]][mod.pos.classe[j],1]*100,2),"~\\% individuals possessing this category belong to cluster ",i,"\n",sep="")
+		}
+cat("\\normalsize\n\n")
+cat("\\end{itemize}\n\n")
+cat("\\end{frame}\n")
+
+}
+}
+@
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+\end{document}
+
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+% * * * * * * * * * * * * * * * *THE END* * * * * * * * * * * * * * * * * * * * 
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

@@ -1,0 +1,29 @@
+\documentclass[a4paper]{article}
+\usepackage{Sweave}
+\usepackage{hyperref}
+\usepackage[left=2cm,top=1cm,right=2cm,nohead,nofoot]{geometry}
+\title{The EnQuireR package: results of the ENbarplot function}
+
+\begin{document}
+\maketitle
+\listoffigures
+
+<<results=tex,echo=FALSE>>=
+barplot_function(dataset, X, spl = TRUE, numr = 1, numc = 1)
+for (i in (length(dev.list())-length(X)+1):length(dev.list())){
+	a=i-(length(dev.list())-length(X)+1)+1
+	nom=names(dataset)[X[a]]
+	dev.set(dev.list()[i])
+	file=paste("barplot",a,".pdf",sep="")
+	savePlot(filename = file,type = "pdf",device = dev.cur(),restoreConsole = TRUE)
+	cat("\\begin{figure}\n")
+	cat("\\centering\n\n")
+	cat("\\includegraphics{",file,"}\n\n",sep="")
+	cat("\\caption{",nom,"}\n",sep="")
+	cat("\\end{figure}\n\n")
+	cat("\\clearpage\n\n")
+}
+@
+
+
+\end{document}

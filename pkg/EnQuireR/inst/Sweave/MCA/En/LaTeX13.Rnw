@@ -1,0 +1,400 @@
+\documentclass[a4paper]{article}
+\usepackage{Sweave}
+\usepackage{hyperref}
+\usepackage{subfigure}
+\usepackage[left=3cm,top=2cm,right=3cm,nohead]{geometry}
+\title{Results of the Multiple Correspondance Analysis: ENMCA function of the EnQuireR package}
+\author{G. Fournier
+       M. Cadoret 
+       O. Fournier \\ 
+			 F. Le Poder 
+       S. Lê
+       J. Bouche}
+\begin{document}
+
+<<results=tex,echo=FALSE>>=
+eig1=res.acm$eig[1,2]
+eig2=res.acm$eig[2,2]
+@
+
+<<results=tex,echo=FALSE>>=
+res.dimdesc=dimdesc(res.acm)
+var.dim1=res.dimdesc[[1]][[1]]
+var.dim2=res.dimdesc[[2]][[1]]
+mod.dim1=res.dimdesc[[1]][[2]][!rownames(res.dimdesc[[1]][[2]])%in%c("NA"),]
+mod.dim2=res.dimdesc[[2]][[2]][!rownames(res.dimdesc[[2]][[2]])%in%c("NA"),]
+mod.pos.dim1=mod.dim1[mod.dim1[,1]>0,]
+mod.neg.dim1=mod.dim1[mod.dim1[,1]<0,]
+mod.pos.dim2=mod.dim2[mod.dim2[,1]>0,]
+mod.neg.dim2=mod.dim2[mod.dim2[,1]<0,]
+@
+
+\maketitle
+\tableofcontents
+\listoffigures
+\clearpage
+
+\section{Dataset description}
+
+The analysis was performed on \Sexpr{nrow(dataset2)} individuals described by \Sexpr{length(num.var)} variables:
+
+\begin{itemize}
+<<results=tex,echo=FALSE>>=
+for (i in num.var){
+	cat("\\item \\verb|",names(dataset)[i],"| (")
+	for (j in 1:(nlevels(dataset[,i])-1)){
+		cat("\\verb|",levels(dataset[,i])[j],",|\n")
+	}
+	cat("\\verb|",levels(dataset[,i])[nlevels(dataset[,i])],")|\n")
+}
+@
+\end{itemize}
+
+\flushleft
+
+Moreover, the dataset contained \Sexpr{round(sum(is.na(dataset2))/(nrow(dataset2)*ncol(dataset2)),2)}\% of missing values.
+
+\clearpage
+
+\section{Multiple Correspondance Analysis}
+
+\subsection{Correspondance map on the two first axes}
+
+The correspondance map on the first two axes explains \Sexpr{round(eig1+eig2,2)}\% of the total inertia (\Sexpr{round(eig1,2)}\% for the first factorial axis and \Sexpr{round(eig2,2)}\% for the second one). The low percentages of the eigenvalues on the first correspondance map is due to the nature of the active variables.
+
+\begin{figure}[h]
+\centering
+\mbox{\subfigure{\includegraphics[width=3in]{MCAplotind.pdf}}\quad
+\subfigure{\includegraphics[width=3in]{MCAplotvar.pdf} }}
+\caption{Correspondance map: individuals and variables} 
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\mbox{\subfigure{\includegraphics[width=3in]{Densitypop.pdf}}\quad
+\subfigure{\includegraphics[width=3in]{Lisib.pdf} }}
+\caption{Correspondance map: individuals and variables} 
+\end{figure}
+
+%\begin{figure}[h]
+%\centering
+%\includegraphics[width=3in]{Lisib.pdf}
+%\caption{Graphique issu d'un \'echantillonage sur les individus et les modalit\'es}
+%\end{figure}
+
+%\begin{figure}[h!tbp]
+%\centering
+%\caption{MCA graph of individuals}
+%\includegraphics{MCAplotind.pdf}
+%\end{figure}
+
+%\begin{figure}[h!tbp]
+%\centering
+%\caption{MCA graph of catefories}
+%\includegraphics{MCAplotvar.pdf}
+%\end{figure}
+
+\clearpage
+
+\subsection{Interpretation}
+
+\subsubsection[First axis]{Correspondance map characterization on the first axis with variables}
+
+<<results=tex,echo=FALSE>>=
+cat("\n\n")
+if (nrow(var.dim1)!=0){
+	cat("\\vspace{0.5cm}\n")
+	cat("\\textbf{The most meaningful variables characterizing the first factorial axis are:}\n")
+	cat("\\begin{itemize}\n")
+	for (i in 1:nrow(var.dim1)){		
+		cat("\\item \\verb|",rownames(var.dim1)[i],"|\n")
+		if(nrow(mod.pos.dim1)!=0){
+			mod.var=rownames(mod.pos.dim1)[rownames(mod.pos.dim1)%in%levels(res.acm$call$X[,rownames(var.dim1)[i]])]
+			if (length(mod.var)!=0){
+				cat("%\\begin{itemize}\n")
+				for(n in 1:length(mod.var)){
+					cat("%\\item \\verb|",mod.var[n],"|\n")
+					cat("%\\begin{itemize}\n")				
+					cat("%\\item Coordonn\\'ee:",round(res.acm$var$coord[mod.var[n],1],3),"\n")
+					cat("%\\item Contribution:",round(res.acm$var$contrib[mod.var[n],1],2),"\n")
+					cat("%\\item Valeur test:",round(res.acm$var$vtest[mod.var[n],1],2),"\n")
+					cat("%\\item Fr\\'equence dans la population:",round(res.acm$call$marge.col[mod.var[n]][[1]]*100,2),"\\%\n")		
+					cat("%\\end{itemize}\n\n")
+				}
+				cat("%\\end{itemize}\n\n")
+			}		
+		}				
+	}
+	cat("\\end{itemize}\n\n")
+}else{
+	cat("There are no meaningful variables characterizing the first factorial axis.\n\n")
+}
+
+cat("\\vspace{0.5cm}\n")
+cat("\\textbf{Most meaningful categories characterizing the positive side of the factorial axis:}\n")
+if (nrow(mod.pos.dim1)>10){
+	a=10
+}else{
+	a=nrow(mod.pos.dim1)
+}
+if (nrow(mod.pos.dim1)!=0){
+				cat("\\begin{itemize}\n")
+				for(n in 1:a){
+					cat("\\item \\verb|",rownames(mod.pos.dim1)[n],"|\n")
+					cat("\\begin{itemize}\n")				
+					cat("%\\item Coordonn\\'ee:",round(res.acm$var$coord[rownames(mod.pos.dim1)[n],1],3),"\n")
+					cat("\\item Contribution:",round(res.acm$var$contrib[rownames(mod.pos.dim1)[n],1],2),"\n")
+					cat("\\item V-Test:",round(res.acm$var$vtest[rownames(mod.pos.dim1)[n],1],2),"\n")
+					for (i in 1:ncol(res.acm$call$X)){
+					if (rownames(mod.pos.dim1)[n]%in%levels(res.acm$call$X[,i])){
+					x=names(res.acm$call$X)[i]
+					}
+					}
+					b=summary(res.acm$call$X[,x])
+					c=b[rownames(mod.pos.dim1)[n]][1]
+					d=c/sum(b)
+					cat("\\item Frequency in the population:",round(d*100,2),"\\%\n")		
+					cat("\\end{itemize}\n\n")					
+				}
+				cat("\\end{itemize}\n\n")
+}else{
+	cat("There are no meaningful categories characterizing the positive side of the first factorial axis.\n\n")
+}
+
+cat("\\vspace{0.5cm}\n")
+cat("\\textbf{Most meaningful categories characterizing the negative side of the factorial axis:}\n")
+if (nrow(mod.neg.dim1)>10){
+	a=nrow(mod.neg.dim1)-9
+}else{
+	a=1
+}
+if (nrow(mod.neg.dim1)!=0){
+				cat("\\begin{itemize}\n")
+				for(n in nrow(mod.neg.dim1):a){
+					cat("\\item \\verb|",rownames(mod.neg.dim1)[n],"|\n")
+					cat("\\begin{itemize}\n")				
+					cat("%\\item Coordonn\\'ee:",round(res.acm$var$coord[rownames(mod.neg.dim1)[n],1],3),"\n")
+					cat("\\item Contribution:",round(res.acm$var$contrib[rownames(mod.neg.dim1)[n],1],2),"\n")
+					cat("\\item V-Test:",round(res.acm$var$vtest[rownames(mod.neg.dim1)[n],1],2),"\n")
+					for (i in 1:ncol(res.acm$call$X)){
+					if (rownames(mod.neg.dim1)[n]%in%levels(res.acm$call$X[,i])){
+					x=names(res.acm$call$X)[i]
+					}
+					}
+					b=summary(res.acm$call$X[,x])
+					c=b[rownames(mod.neg.dim1)[n]][1]
+					d=c/sum(b)
+					cat("\\item Frequency in the population:",round(d*100,2),"\\%\n")
+					cat("\\end{itemize}\n\n")
+				}
+				cat("\\end{itemize}\n\n")
+}else{
+	cat("There are no meaningful categories characterizing the negative side of the first factorial axis.\n\n")
+}
+@
+
+\subsubsection[Second axis]{Correspondance map characterization on the second axis with variables}
+
+<<results=tex,echo=FALSE>>=
+if (nrow(var.dim2)!=0){
+	cat("\\vspace{0.5cm}\n")
+	cat("\\textbf{The most meaningful variables characterizing the second factorial axis are:}\n")
+	cat("\\begin{itemize}\n")
+	for (i in 1:nrow(var.dim2)){		
+		cat("\\item \\verb|",rownames(var.dim2)[i],"|\n")
+		if(nrow(mod.pos.dim2)!=0){
+			mod.var=rownames(mod.pos.dim2)[rownames(mod.pos.dim2)%in%levels(res.acm$call$X[,rownames(var.dim2)[i]])]
+			if (length(mod.var)!=0){
+				cat("%\\begin{itemize}\n")
+				cat("%\\item Modalit\\'es caract\\'erisant le p\\^ole positif de l'axe:\n")
+				cat("%\\begin{itemize}\n")
+				for(n in 1:length(mod.var)){
+					cat("%\\item \\verb|",mod.var[n],"|\n")
+					cat("%\\begin{itemize}\n")				
+					cat("%\\item Coordonn\\'ee:",round(res.acm$var$coord[mod.var[n],2],3),"\n")
+					cat("%\\item Contribution:",round(res.acm$var$contrib[mod.var[n],2],2),"\n")
+					cat("%\\item Valeur test:",round(res.acm$var$vtest[mod.var[n],2],2),"\n")
+					cat("%\\item Fr\\'equence dans la population:",round(res.acm$call$marge.col[mod.var[n]][[1]]*100,2),"\\%\n")		
+					cat("%\\end{itemize}\n\n")
+				}
+				cat("%\\end{itemize}\n\n")
+				cat("%\\end{itemize}\n\n")
+			}	
+		}
+	}			
+	cat("\\end{itemize}\n\n")
+}else{
+	cat("There are no meaningful variables characterizing the second factorial axis.\n\n")
+}
+
+cat("\\vspace{0.5cm}\n")
+cat("\\textbf{Most meaningful categories characterizing the positive side of the factorial axis:}\n")	
+if (nrow(mod.pos.dim2)>10){
+	a=10
+}else{
+	a=nrow(mod.pos.dim2)
+}
+if (nrow(mod.pos.dim2)!=0){
+				cat("\\begin{itemize}\n")
+				for(n in 1:a){
+					cat("\\item \\verb|",rownames(mod.pos.dim2)[n],"|\n")
+					cat("\\begin{itemize}\n")				
+					cat("%\\item Coordonn\\'ee:",round(res.acm$var$coord[rownames(mod.pos.dim2)[n],2],3),"\n")
+					cat("\\item Contribution:",round(res.acm$var$contrib[rownames(mod.pos.dim2)[n],2],2),"\n")
+					cat("\\item V-Test:",round(res.acm$var$vtest[rownames(mod.pos.dim2)[n],2],2),"\n")
+					for (i in 1:ncol(res.acm$call$X)){
+					if (rownames(mod.pos.dim2)[n]%in%levels(res.acm$call$X[,i])){
+					x=names(res.acm$call$X)[i]
+					}
+					}
+					b=summary(res.acm$call$X[,x])
+					c=b[rownames(mod.pos.dim2)[n]][1]
+					d=c/sum(b)
+					cat("\\item Frequency in the population:",round(d*100,2),"\\%\n")	
+					cat("\\end{itemize}\n\n")
+				}
+				cat("\\end{itemize}\n\n")
+}else{
+	cat("There are no meaningful categories characterizing the positive side of the second factorial axis.\n\n")
+}
+
+cat("\\vspace{0.5cm}\n")
+cat("\\textbf{Most meaningful categories characterizing the negative side of the factorial axis:}\n")	
+if (nrow(mod.neg.dim2)>10){
+	a=nrow(mod.neg.dim2)-9
+}else{
+	a=1
+}
+if (nrow(mod.neg.dim2)!=0){
+				cat("\\begin{itemize}\n")
+				for(n in nrow(mod.neg.dim2):a){
+					cat("\\item \\verb|",rownames(mod.neg.dim2)[n],"|\n")
+					cat("\\begin{itemize}\n")				
+					cat("%\\item Coordonn\\'ee:",round(res.acm$var$coord[rownames(mod.neg.dim2)[n],2],3),"\n")
+					cat("\\item Contribution:",round(res.acm$var$contrib[rownames(mod.neg.dim2)[n],2],2),"\n")
+					cat("\\item V-Test:",round(res.acm$var$vtest[rownames(mod.neg.dim2)[n],2],2),"\n")
+					for (i in 1:ncol(res.acm$call$X)){
+					if (rownames(mod.neg.dim2)[n]%in%levels(res.acm$call$X[,i])){
+					x=names(res.acm$call$X)[i]
+					}
+					}
+					b=summary(res.acm$call$X[,x])
+					c=b[rownames(mod.neg.dim2)[n]][1]
+					d=c/sum(b)
+					cat("\\item Frequency in the population:",round(d*100,2),"\\%\n")	
+					cat("\\end{itemize}\n\n")
+				}
+				cat("\\end{itemize}\n\n")
+}else{
+	cat("There are no meaningful categories characterizing the negative side of the second factorial axis.\n\n")
+}
+@
+
+\clearpage
+
+\section{Types of individuals}
+
+\subsection{Choice of the number of clusters}
+The ascendant hierarchical clustering lead to a partition made of \Sexpr{nlevels(dataset2[,ncol(dataset2)])} clusters. Those clusters are displayed in the following correspondence map.
+%\begin{figure}[h!tbp]
+%\centering
+%\caption{Cluster plot}
+%\includegraphics{Clustplot.pdf}
+%\end{figure}
+
+%\subsection{Graphique individus par classes}
+%\begin{figure}[h!tbp]
+%\centering
+%\caption{Plot of individuals}
+%\includegraphics{MCAplotindclasse.pdf}
+%\end{figure}
+
+\begin{figure}[h]
+\centering
+\mbox{\subfigure{\includegraphics[width=3in]{Clustplot.pdf}}\quad
+\subfigure{\includegraphics[width=3in]{MCAplotindclasse.pdf} }}
+\caption{Clustering and clustered individuals} 
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\mbox{\subfigure{\includegraphics[width=3in]{Ellipse.pdf}}\quad
+\subfigure{\includegraphics[width=3in]{Density.pdf} }}
+\caption{Confidence ellipses around the clusters} 
+\end{figure}
+
+\begin{figure}[h!tbp]
+\centering
+\includegraphics{barplotgr.pdf}
+\caption{Number of individuals by cluster}
+\end{figure}
+
+\clearpage
+\subsection{Cluster characterization with the variables}
+<<results=tex,echo=FALSE>>=
+if(length(rownames(catdes$test.chi))>10){
+for (i in 1:10){
+	cat("\\subsubsection{Number of individuals by cluster for the variable ",rownames(catdes$test.chi)[i],"}\n\n")
+	cat("\\begin{figure}[h!]\n\n")
+	cat("\\centering\n\n")
+	cat("\\includegraphics{barvarclus",i,".pdf}\n\n",sep="")
+	cat("\\caption[Variable ",rownames(catdes$test.chi)[i],"]{Variable ",rownames(catdes$test.chi)[i],"}\n\n",sep="")
+	cat("\\end{figure}\n\n")
+	cat("\\clearpage\n\n")	
+}
+}else{
+for (i in 1:length(rownames(catdes$test.chi))){
+	cat("\\subsubsection{Number of individuals by cluster for the variable ",rownames(catdes$test.chi)[i],"}\n\n")
+	cat("\\begin{figure}[h!]\n\n")
+	cat("\\centering\n\n")
+	cat("\\includegraphics{barvarclus",i,".pdf}\n\n",sep="")
+	cat("\\caption[Variable ",rownames(catdes$test.chi)[i],"]{Variable ",rownames(catdes$test.chi)[i],"}\n\n",sep="")
+	cat("\\end{figure}\n\n")
+	cat("\\clearpage\n\n")	
+}
+}
+@
+
+\clearpage
+\subsection{Cluster characterization with the categories}
+%if(sum(is.na(dataset))==0){
+%res.mark=ENmark(hclus,num.var=c(1:(ncol(hclus)-1)),ncol(hclus),method="hyper")
+%}
+%if(sum(is.na(dataset))==0){
+%cat("\\vspace{0.5cm}\n")
+%	cat("\\textbf{The individuals of the cluster ",i," are also those who possess the folowing combinations of categories:}\n\n")
+%	cat("\\begin{itemize}\n\n")	
+%			cat("\\item \\verb|",res.mark[[i]][1,1],"| \\textbf{and} \\verb|",res.mark[[i]][1,2],"| \\textbf{and} \\verb|",res.mark[[i]][1,3],"|\n\n")
+%			cat("\\textbf{or}\n\n")
+%			cat("\\item \\verb|",res.mark[[i]][2,1],"| \\textbf{and} \\verb|",res.mark[[i]][2,2],"| \\textbf{and} \\verb|",res.mark[[i]][1,3],"|\n\n")
+%			cat("\\textbf{or}\n\n")
+%			cat("\\item \\verb|",res.mark[[i]][3,1],"| \\textbf{and} \\verb|",res.mark[[i]][3,2],"| \\textbf{and} \\verb|",res.mark[[i]][1,3],"|\n\n")		
+%			cat("\\end{itemize}\n\n")	
+%}
+
+<<results=tex,echo=FALSE>>=
+for (i in 1:nlevels(dataset2[,ncol(dataset2)])){
+	mod.pos.classe=rownames(catdes$category[[i]][catdes$category[[i]][,5]>0,])
+if (length(mod.pos.classe)<10){
+	a=length(mod.pos.classe)
+}else{
+	a=10
+}
+if (length(mod.pos.classe)!=0){
+	cat("\\vspace{0.5cm}\n")
+	cat("\\textbf{The cluster ",i,"(",nrow(hclus[hclus[,ncol(hclus)]==i,])," individuals) includes the individuals possessing the following categories:}\n")
+		cat("\\begin{itemize}\n")
+		for (j in 1:10){
+			cat("\\item \\verb|",mod.pos.classe[j],"|\n\n")
+		cat(round(catdes$category[[i]][mod.pos.classe[j],3]*100,2),"\\% of the individuals possess this category in the global population versus  ",round(catdes$category[[i]][mod.pos.classe[j],2]*100,2),"\\% in the cluster ",i,". \n\n")
+			cat("Moreover, ",round(catdes$category[[i]][mod.pos.classe[j],1]*100,2),"\\% of the individuals possessing this category belong to the cluster ",i,".\n")
+		}
+		cat("\\end{itemize}\n\n")
+		cat("\n\n")
+}
+}
+@
+
+
+
+\end{document}

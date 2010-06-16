@@ -1,0 +1,1 @@
+export(MCA2,ENellipse,chisq.desc,tab_chi2,ENbarplot,ENmarking,GRmarking,col.barplot,ENMCA,cuttree.graph,barplot_sweave,chisq.sweave,barplot_function,chisq.function,ENlisib,ENdensity,XvsYbarplot,p_inertia,barplotgroupes,barplotclustervsvar,legend2,catdes2)

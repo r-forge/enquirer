@@ -1,0 +1,367 @@
+\documentclass[a4paper]{article}
+\usepackage{Sweave}
+\usepackage{hyperref}
+\usepackage{subfigure}
+\usepackage[left=3cm,top=2cm,right=3cm,nohead]{geometry}
+\title{R\'esultats d'analyse factorielle: fonction ENMCA du package EnQuireR}
+\author{G. Fournier
+       M. Cadoret 
+       O. Fournier \\ 
+			 F. Le Poder 
+       S. Lê
+       J. Bouche}
+\begin{document}
+
+<<results=tex,echo=FALSE>>=
+eig1=res.acm$eig[1,2]
+eig2=res.acm$eig[2,2]
+@
+
+<<results=tex,echo=FALSE>>=
+res.dimdesc=dimdesc(res.acm)
+var.dim1=res.dimdesc[[1]][[1]]
+var.dim2=res.dimdesc[[2]][[1]]
+mod.dim1=res.dimdesc[[1]][[2]][!rownames(res.dimdesc[[1]][[2]])%in%c("NA"),]
+mod.dim2=res.dimdesc[[2]][[2]][!rownames(res.dimdesc[[2]][[2]])%in%c("NA"),]
+mod.pos.dim1=mod.dim1[mod.dim1[,1]>0,]
+mod.neg.dim1=mod.dim1[mod.dim1[,1]<0,]
+mod.pos.dim2=mod.dim2[mod.dim2[,1]>0,]
+mod.neg.dim2=mod.dim2[mod.dim2[,1]<0,]
+@
+
+\maketitle
+\tableofcontents
+\listoffigures
+\clearpage
+
+\section{Description du jeu de donn\'ees}
+
+L'analyse porte sur \Sexpr{nrow(dataset2)} individus qui sont d\'ecrits par \Sexpr{length(num.var)} variables. Celles-cis sont les suivantes:
+
+\begin{itemize}
+<<results=tex,echo=FALSE>>=
+for (i in num.var){
+	cat("\\item \\verb|",names(dataset)[i],"| (")
+	for (j in 1:(nlevels(dataset[,i])-1)){
+		cat("\\verb|",levels(dataset[,i])[j],",|\n")
+	}
+	cat("\\verb|",levels(dataset[,i])[nlevels(dataset[,i])],")|\n")
+}
+@
+\end{itemize}
+
+\flushleft
+
+De plus, le jeu de donn\'ees comportait \Sexpr{round(sum(is.na(dataset2))/(nrow(dataset2)*ncol(dataset2)),2)}\% de donn\'ees manquantes.
+
+\clearpage
+
+\section{Analyse des correspondances multiples}
+
+\subsection{Repr\'esentation graphique du premier plan factoriel}
+
+Le premier plan factoriel repr\'esente \Sexpr{round(eig1+eig2,2)}\% de l'inertie totale (\Sexpr{round(eig1,2)}\% pour le premier axe factoriel et \Sexpr{round(eig2,2)}\% pour le second). La nature des donn\'ees analys\'ees en Analyse des Correspondances Multiples est telle que l'inertie projet\'ee sur le premier plan factoriel est toujours faible. En outre, et contrairement \`a la m\'ethode d'Analyse en Composantes Principales, ces pourcentages ne servent pas \`a l'interpretation des r\'esultats.
+
+\begin{figure}[h]
+\centering
+\mbox{\subfigure{\includegraphics[width=3in]{MCAplotind.pdf}}\quad
+\subfigure{\includegraphics[width=3in]{MCAplotvar.pdf} }}
+\caption{Premier plan factoriel: individus et variables} 
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\mbox{\subfigure{\includegraphics[width=3in]{Densitypop.pdf}}\quad
+\subfigure{\includegraphics[width=3in]{Lisib.pdf} }}
+\caption{Premier plan factoriel: individus et variables} 
+\end{figure}
+
+%\begin{figure}[h]
+%\centering
+%\includegraphics[width=3in]{Lisib.pdf}
+%\caption{Graphique issu d'un \'echantillonage sur les individus et les modalit\'es}
+%\end{figure}
+
+%\begin{figure}[h!tbp]
+%\centering
+%\caption{MCA graph of individuals}
+%\includegraphics{MCAplotind.pdf}
+%\end{figure}
+
+%\begin{figure}[h!tbp]
+%\centering
+%\caption{MCA graph of catefories}
+%\includegraphics{MCAplotvar.pdf}
+%\end{figure}
+
+\clearpage
+
+\subsection{Interpr\'etation}
+
+\subsubsection[Premier axe]{Caract\'erisation du premier axe fatoriel par les variables}
+
+<<results=tex,echo=FALSE>>=
+cat("\n\n")
+if (nrow(var.dim1)!=0){
+	cat("\\vspace{0.5cm}\n")
+	cat("\\textbf{Les variables qui caract\\'erisent le plus le premier axe factoriel sont les suivantes:}\n")
+	cat("\\begin{itemize}\n")
+	for (i in 1:nrow(var.dim1)){		
+		cat("\\item \\verb|",rownames(var.dim1)[i],"|\n")
+		if(nrow(mod.pos.dim1)!=0){
+			mod.var=rownames(mod.pos.dim1)[rownames(mod.pos.dim1)%in%levels(res.acm$call$X[,rownames(var.dim1)[i]])]
+			if (length(mod.var)!=0){
+				cat("%\\begin{itemize}\n")
+				for(n in 1:length(mod.var)){
+					cat("%\\item \\verb|",mod.var[n],"|\n")
+					cat("%\\begin{itemize}\n")				
+					cat("%\\item Coordonn\\'ee:",round(res.acm$var$coord[mod.var[n],1],3),"\n")
+					cat("%\\item Contribution:",round(res.acm$var$contrib[mod.var[n],1],2),"\n")
+					cat("%\\item Valeur test:",round(res.acm$var$vtest[mod.var[n],1],2),"\n")
+					cat("%\\item Fr\\'equence dans la population:",round(res.acm$call$marge.col[mod.var[n]][[1]]*100,2),"\\%\n")		
+					cat("%\\end{itemize}\n\n")
+				}
+				cat("%\\end{itemize}\n\n")
+			}		
+		}				
+	}
+	cat("\\end{itemize}\n\n")
+}else{
+	cat("Aucune variable ne permet de caract\\'eriser le premier axe factoriel\n\n")
+}
+
+cat("\\vspace{0.5cm}\n")
+cat("\\textbf{Les modalit\\'es qui caract\\'erisent le c\\^ot\\'e positif du premier axe factoriel sont:}\n")
+if (nrow(mod.pos.dim1)>10){
+	a=10
+}else{
+	a=nrow(mod.pos.dim1)
+}
+if (nrow(mod.pos.dim1)!=0){
+				cat("\\begin{itemize}\n")
+				for(n in 1:a){
+					cat("\\item \\verb|",rownames(mod.pos.dim1)[n],"|\n")
+					cat("\\begin{itemize}\n")				
+					cat("%\\item Coordonn\\'ee:",round(res.acm$var$coord[rownames(mod.pos.dim1)[n],1],3),"\n")
+					cat("\\item Contribution:",round(res.acm$var$contrib[rownames(mod.pos.dim1)[n],1],2),"\n")
+					cat("\\item Valeur test:",round(res.acm$var$vtest[rownames(mod.pos.dim1)[n],1],2),"\n")
+					for (i in 1:ncol(res.acm$call$X)){
+					if (rownames(mod.pos.dim1)[n]%in%levels(res.acm$call$X[,i])){
+					x=names(res.acm$call$X)[i]
+					}
+					}
+					b=summary(res.acm$call$X[,x])
+					c=b[rownames(mod.pos.dim1)[n]][1]
+					d=c/sum(b)
+					cat("\\item Fr\\'equence dans la population:",round(d*100,2),"\\%\n")		
+					cat("\\end{itemize}\n\n")					
+				}
+				cat("\\end{itemize}\n\n")
+}else{
+	cat("Aucune modalit\\'es ne permet de caract\\'eriser le c\\^ot\\'e positif du premier axe factoriel\n\n")
+}
+
+cat("\\vspace{0.5cm}\n")
+cat("\\textbf{Les modalit\\'es qui caract\\'erisent le c\\^ot\\'e n\\'egatif du premier axe sont:}\n")
+if (nrow(mod.neg.dim1)>10){
+	a=nrow(mod.neg.dim1)-9
+}else{
+	a=1
+}
+if (nrow(mod.neg.dim1)!=0){
+				cat("\\begin{itemize}\n")
+				for(n in nrow(mod.neg.dim1):a){
+					cat("\\item \\verb|",rownames(mod.neg.dim1)[n],"|\n")
+					cat("\\begin{itemize}\n")				
+					cat("%\\item Coordonn\\'ee:",round(res.acm$var$coord[rownames(mod.neg.dim1)[n],1],3),"\n")
+					cat("\\item Contribution:",round(res.acm$var$contrib[rownames(mod.neg.dim1)[n],1],2),"\n")
+					cat("\\item Valeur test:",round(res.acm$var$vtest[rownames(mod.neg.dim1)[n],1],2),"\n")
+					for (i in 1:ncol(res.acm$call$X)){
+					if (rownames(mod.neg.dim1)[n]%in%levels(res.acm$call$X[,i])){
+					x=names(res.acm$call$X)[i]
+					}
+					}
+					b=summary(res.acm$call$X[,x])
+					c=b[rownames(mod.neg.dim1)[n]][1]
+					d=c/sum(b)
+					cat("\\item Fr\\'equence dans la population:",round(d*100,2),"\\%\n")
+					cat("\\end{itemize}\n\n")
+				}
+				cat("\\end{itemize}\n\n")
+}else{
+	cat("Aucune modalit\\'es ne permet de caract\\'eriser le c\\^ot\\'e n\\'egatif du premier axe factoriel\n\n")
+}
+@
+
+\subsubsection[Second axe]{Caract\'erisation du second axe fatoriel par les variables}
+
+<<results=tex,echo=FALSE>>=
+if (nrow(var.dim2)!=0){
+	cat("\\vspace{0.5cm}\n")
+	cat("\\textbf{Les variables qui caract\\'erisent le plus le second axe factoriel sont les suivantes:}\n")
+	cat("\\begin{itemize}\n")
+	for (i in 1:nrow(var.dim2)){		
+		cat("\\item \\verb|",rownames(var.dim2)[i],"|\n")
+		if(nrow(mod.pos.dim2)!=0){
+			mod.var=rownames(mod.pos.dim2)[rownames(mod.pos.dim2)%in%levels(res.acm$call$X[,rownames(var.dim2)[i]])]
+			if (length(mod.var)!=0){
+				cat("%\\begin{itemize}\n")
+				cat("%\\item Modalit\\'es caract\\'erisant le p\\^ole positif de l'axe:\n")
+				cat("%\\begin{itemize}\n")
+				for(n in 1:length(mod.var)){
+					cat("%\\item \\verb|",mod.var[n],"|\n")
+					cat("%\\begin{itemize}\n")				
+					cat("%\\item Coordonn\\'ee:",round(res.acm$var$coord[mod.var[n],2],3),"\n")
+					cat("%\\item Contribution:",round(res.acm$var$contrib[mod.var[n],2],2),"\n")
+					cat("%\\item Valeur test:",round(res.acm$var$vtest[mod.var[n],2],2),"\n")
+					cat("%\\item Fr\\'equence dans la population:",round(res.acm$call$marge.col[mod.var[n]][[1]]*100,2),"\\%\n")		
+					cat("%\\end{itemize}\n\n")
+				}
+				cat("%\\end{itemize}\n\n")
+				cat("%\\end{itemize}\n\n")
+			}	
+		}
+	}			
+	cat("\\end{itemize}\n\n")
+}else{
+	cat("Aucune variable ne permet de caract\\'eriser le premier axe factoriel\n\n")
+}
+
+cat("\\vspace{0.5cm}\n")
+cat("\\textbf{Les modalit\\'es qui caract\\'erisent le c\\^ot\\'e positif du second axe factoriel sont:}\n")	
+if (nrow(mod.pos.dim2)>10){
+	a=10
+}else{
+	a=nrow(mod.pos.dim2)
+}
+if (nrow(mod.pos.dim2)!=0){
+				cat("\\begin{itemize}\n")
+				for(n in 1:a){
+					cat("\\item \\verb|",rownames(mod.pos.dim2)[n],"|\n")
+					cat("\\begin{itemize}\n")				
+					cat("%\\item Coordonn\\'ee:",round(res.acm$var$coord[rownames(mod.pos.dim2)[n],2],3),"\n")
+					cat("\\item Contribution:",round(res.acm$var$contrib[rownames(mod.pos.dim2)[n],2],2),"\n")
+					cat("\\item Valeur test:",round(res.acm$var$vtest[rownames(mod.pos.dim2)[n],2],2),"\n")
+					for (i in 1:ncol(res.acm$call$X)){
+					if (rownames(mod.pos.dim2)[n]%in%levels(res.acm$call$X[,i])){
+					x=names(res.acm$call$X)[i]
+					}
+					}
+					b=summary(res.acm$call$X[,x])
+					c=b[rownames(mod.pos.dim2)[n]][1]
+					d=c/sum(b)
+					cat("\\item Fr\\'equence dans la population:",round(d*100,2),"\\%\n")	
+					cat("\\end{itemize}\n\n")
+				}
+				cat("\\end{itemize}\n\n")
+}else{
+	cat("Aucune modalit\\'e ne permet de caract\\'eriser le c\\^ot\\'e positif du premier axe factoriel\n\n")
+}
+
+cat("\\vspace{0.5cm}\n")
+cat("\\textbf{Les modalit\\'e qui caract\\'erisent le c\\^ot\\'e n\\'egatif du second axe factoriel sont:}\n")	
+if (nrow(mod.neg.dim2)>10){
+	a=nrow(mod.neg.dim2)-9
+}else{
+	a=1
+}
+if (nrow(mod.neg.dim2)!=0){
+				cat("\\begin{itemize}\n")
+				for(n in nrow(mod.neg.dim2):a){
+					cat("\\item \\verb|",rownames(mod.neg.dim2)[n],"|\n")
+					cat("\\begin{itemize}\n")				
+					cat("%\\item Coordonn\\'ee:",round(res.acm$var$coord[rownames(mod.neg.dim2)[n],2],3),"\n")
+					cat("\\item Contribution:",round(res.acm$var$contrib[rownames(mod.neg.dim2)[n],2],2),"\n")
+					cat("\\item Valeur test:",round(res.acm$var$vtest[rownames(mod.neg.dim2)[n],2],2),"\n")
+					for (i in 1:ncol(res.acm$call$X)){
+					if (rownames(mod.neg.dim2)[n]%in%levels(res.acm$call$X[,i])){
+					x=names(res.acm$call$X)[i]
+					}
+					}
+					b=summary(res.acm$call$X[,x])
+					c=b[rownames(mod.neg.dim2)[n]][1]
+					d=c/sum(b)
+					cat("\\item Fr\\'equence dans la population:",round(d*100,2),"\\%\n")	
+					cat("\\end{itemize}\n\n")
+				}
+				cat("\\end{itemize}\n\n")
+}else{
+	cat("Aucune modalit\\'e ne permet de caract\\'eriser le c\\^ot\\'e n\\'egatif du premier axe factoriel\n\n")
+}
+@
+
+\clearpage
+
+\section{Typologie des personnes interrog\'ees}
+
+\subsection{Choix du nombre de classes}
+La classification ascendante hi\'erarchique a aboutit \`a une partition constitu\'ee de \Sexpr{nlevels(dataset2[,ncol(dataset2)])} classes d'individus. Celles-ci sont repr\'esent\'ees ci-dessous:
+%\begin{figure}[h!tbp]
+%\centering
+%\caption{Cluster plot}
+%\includegraphics{Clustplot.pdf}
+%\end{figure}
+
+%\subsection{Graphique individus par classes}
+%\begin{figure}[h!tbp]
+%\centering
+%\caption{Plot of individuals}
+%\includegraphics{MCAplotindclasse.pdf}
+%\end{figure}
+
+\begin{figure}[h]
+\centering
+\mbox{\subfigure{\includegraphics[width=3in]{Clustplot.pdf}}\quad
+\subfigure{\includegraphics[width=3in]{MCAplotindclasse.pdf} }}
+\caption{Classification et repr\'esentation des groupes} 
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\mbox{\subfigure{\includegraphics[width=3in]{Ellipse.pdf}}\quad
+\subfigure{\includegraphics[width=3in]{Density.pdf} }}
+\caption{Ellipses de confiance autour des centres de gravité de classes.} 
+\end{figure}
+
+\clearpage
+\subsection{Caract\'erisation des classes}
+<<results=tex,echo=FALSE>>=
+if(sum(is.na(dataset))==0){
+res.mark=ENmark(hclus,num.var=c(1:(ncol(hclus)-1)),ncol(hclus),method="hyper")
+}
+for (i in 1:nlevels(dataset2[,ncol(dataset2)])){
+	mod.pos.classe=rownames(catdes$category[[i]][catdes$category[[i]][,5]>0,])
+if (length(mod.pos.classe)<10){
+	a=length(mod.pos.classe)
+}else{
+	a=10
+}
+if (length(mod.pos.classe)!=0){
+	cat("\\vspace{0.5cm}\n")
+	cat("\\textbf{Les modalit\\'es significatives pour la classe ",i,"(",nrow(hclus[hclus[,ncol(hclus)]==i,])," individus) sont:}\n")
+		cat("\\begin{itemize}\n")
+		for (j in 1:10){
+			cat("\\item \\verb|",mod.pos.classe[j],"|\n\n")
+			cat("Il y a ",round(catdes$category[[i]][mod.pos.classe[j],3]*100,2),"\\% d'individus dans la population totale qui poss\\`edent cette modalit\\'e contre ",round(catdes$category[[i]][mod.pos.classe[j],2]*100,2),"\\% dans la classe ",i,". \n\n")
+			cat("Enfin, ",round(catdes$category[[i]][mod.pos.classe[j],1]*100,2),"\\% des personnes qui poss\\`edent cette modalit\\'e appartiennent \\`a la classe ",i,".\n")
+		}
+		cat("\\end{itemize}\n\n")
+		cat("\n\n")
+}
+if(sum(is.na(dataset))==0){
+cat("\\vspace{0.5cm}\n")
+	cat("\\textbf{La classe ",i," est \\'egalement compos\\'ee des individus poss\\'edant les combinaisons de modalit\\'es suivantes:}\n\n")
+	cat("\\begin{itemize}\n\n")	
+			cat("\\item \\verb|",res.mark[[i]][1,1],"| \\textbf{et} \\verb|",res.mark[[i]][1,2],"| \\textbf{et} \\verb|",res.mark[[i]][1,3],"|\n\n")
+			cat("\\textbf{ou}\n\n")
+			cat("\\item \\verb|",res.mark[[i]][2,1],"| \\textbf{et} \\verb|",res.mark[[i]][2,2],"| \\textbf{et} \\verb|",res.mark[[i]][1,3],"|\n\n")
+			cat("\\textbf{ou}\n\n")
+			cat("\\item \\verb|",res.mark[[i]][3,1],"| \\textbf{et} \\verb|",res.mark[[i]][3,2],"| \\textbf{et} \\verb|",res.mark[[i]][1,3],"|\n\n")		
+			cat("\\end{itemize}\n\n")	
+}
+}
+@
+
+
+
+\end{document}

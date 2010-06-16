@@ -1,0 +1,25 @@
+\documentclass[a4paper]{article}
+\usepackage{Sweave}
+\usepackage{hyperref}
+\usepackage[left=2cm,top=1cm,right=2cm,nohead,nofoot]{geometry}
+\title{Sweave test1}
+\author{Jérôme}
+\begin{document}
+\maketitle
+\listoffigures
+
+<<results=tex,echo=FALSE>>=
+for (i in 1:length(X)){
+	file=paste("barplot",i,".pdf",sep="")
+	pdf(file=file)
+	barplot.function(Dataset, X[i], spl = TRUE, numr = 1, numc = 1)
+	dev.off()
+	cat("\\begin{figure}[h]\n")
+	cat("\\centering\n\n")
+	cat("\\caption{",X[i],"}\n",sep="")
+	cat("\\includegraphics{",file,"}\n\n",sep="")
+	cat("\\end{figure}\n\n")
+	cat("\\clearpage\n\n")
+}
+@
+\end{document}

@@ -1,0 +1,50 @@
+\documentclass[a4paper]{article}
+\usepackage{Sweave}
+\usepackage{hyperref}
+\usepackage{algorithmic}
+\usepackage[left=3cm,top=3cm,right=3cm,nohead,nofoot]{geometry}
+\title{Chi squared test}
+\author{EnQuireR team}
+\begin{document}
+
+\maketitle
+\tableofcontents
+\clearpage
+
+<<results=tex,echo=FALSE>>=
+	res=chisq.function(dataset, Y, X, method="proba", print=FALSE)
+	for (j in 0:(length(varY)-1)){
+	cat("\\section{",varY[j+1],"}\n",sep="")
+	for (i in 1:length(varX)){
+	cat("\\subsection{",varY[j+1]," $\\times$ ",varX[i],"}\n",sep="")
+	
+	cat("\\emph{Pearson's Chi-squared test}\n\n")
+	cat("\\begin{Sinput}\n")
+	print(res[[(j*length(!X%in%varY[j+1]))+i]][[1]])
+	cat("\n\n")
+	cat("\\end{Sinput}\n")
+
+	cat("\\emph{Contributions to the $\\chi^2$ distance for each pair of variables}\n\n")
+	cat("\\begin{Sinput}\n")
+	print(signif(res[[(j*length(!X%in%varY[j+1]))+i]][[2]],digits=2))
+	cat("\n\n")
+	cat("\\end{Sinput}\n")
+
+	cat("\\emph{P-values associated to the contributions of the pairs of categories to the $\\chi^2$ distance}\n\n")
+	cat("\\begin{Sinput}\n")
+	print(signif(res[[(j*length(!X%in%varY[j+1]))+i]][[3]],digits=2))
+	cat("\n\n")
+	cat("\\end{Sinput}\n")
+	cat("\\begin{tabular}{|p{14cm}|*{1}{l|}}\n")
+	if (res[[(j*length(!X%in%varY[j+1]))+i]]$Test$p.value<=0.05){
+		cat("\\hline\n")
+		cat("\\textbf{The variables ",varY[j+1]," and ",varX[i]," depend on each other for the threshold 5\\%. The category of the variable ", varY[j+1]," taken by an individual depends on the category he has taken for the variable ",varX[i],".}\\\\\\hline\n")
+	}else{
+  	cat("\\hline\n")
+  	cat("\\textbf{The variables ",varY[j+1]," and ",varX[i]," do not depend on each other for the threshold 5\\%. The category of the variable ", varY[j+1]," taken by an individual does not depend on the category he has taken for the variable ",varX[i],".}\\\\\\hline\n")
+  }
+  cat("\\end{tabular}\n")
+	cat("\\clearpage\n")
+	}}
+@
+\end{document}

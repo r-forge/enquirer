@@ -1,0 +1,54 @@
+\documentclass[a4paper]{article}
+\usepackage{Sweave}
+\usepackage{hyperref}
+\usepackage{algorithmic}
+\usepackage[left=3cm,top=3cm,right=3cm,nohead,nofoot]{geometry}
+\title{Chi squared test}
+\author{EnQuireR team}
+\begin{document}
+
+\maketitle
+\tableofcontents
+\clearpage
+
+<<results=tex,echo=FALSE>>=
+	res=chisq.function(dataset, Y, X, method="proba", print=FALSE)
+	var.prec=names(dimnames(res[[1]][[2]]))[1]
+	cat("\\section{",names(dimnames(res[[1]][[2]]))[1],"}\n",sep="")
+	for (j in 1:length(res)){
+	if(names(dimnames(res[[j]][[2]]))[1]!=var.prec){
+	cat("\\section{",names(dimnames(res[[j]][[2]]))[1],"}\n",sep="")
+	var.prec=names(dimnames(res[[j]][[2]]))[1]
+	}
+	cat("\\subsection{",names(dimnames(res[[j]][[2]]))[1]," $\\times$ ",names(dimnames(res[[j]][[2]]))[2],"}\n",sep="")
+	
+	cat("\\emph{Pearson's Chi-squared test}\n\n")
+	cat("\\begin{Sinput}\n")
+	print(res[[j]][[1]])
+	cat("\n\n")
+	cat("\\end{Sinput}\n")
+
+	cat("\\emph{Contributions to the $\\chi^2$ distance for each pair of variables}\n\n")
+	cat("\\begin{Sinput}\n")
+	print(signif(res[[j]][[2]],digits=2))
+	cat("\n\n")
+	cat("\\end{Sinput}\n")
+
+	cat("\\emph{P-values associated to the contributions of the pairs of categories to the $\\chi^2$ distance}\n\n")
+	cat("\\begin{Sinput}\n")
+	print(signif(res[[j]][[3]],digits=2))
+	cat("\n\n")
+	cat("\\end{Sinput}\n")
+	cat("\\begin{tabular}{|p{14cm}|*{1}{l|}}\n")
+	if (res[[j]]$Test$p.value<=0.05){
+		cat("\\hline\n")
+		cat("\\textbf{The variables ",names(dimnames(res[[j]][[2]]))[1]," and ",names(dimnames(res[[j]][[2]]))[2]," depend on each other for the threshold 5\\%. The category of the variable ",names(dimnames(res[[j]][[2]]))[1]," taken by an individual depends on the category he has taken for the variable ",names(dimnames(res[[j]][[2]]))[2],".}\\\\\\hline\n")
+	}else{
+  	cat("\\hline\n")
+  	cat("\\textbf{The variables ",names(dimnames(res[[j]][[2]]))[1]," and ",names(dimnames(res[[j]][[2]]))[2]," do not depend on each other for the threshold 5\\%. The category of the variable ", names(dimnames(res[[j]][[2]]))[1]," taken by an individual does not depend on the category he has taken for the variable ",names(dimnames(res[[j]][[2]]))[2],".}\\\\\\hline\n")
+  }
+  cat("\\end{tabular}\n")
+	cat("\\clearpage\n")
+	}
+@
+\end{document}
