@@ -1,5 +1,3 @@
-#Bienvenue, bienvenue !
-
 #Barplot simple
 
 "barplot_function"=function(dataset,X,spl=FALSE,numr=NULL,numc=NULL,cex=1,colour=NULL){      #X=vecteur des variables choisies, numr=nb de lignes de la fenêtre graphique, numc=nb de colonnes de la fenête graphique, col=couleurs
