@@ -9,7 +9,7 @@ This function allows to perform a cluster analysis following a MCA.
 }
 
 \usage{
-ENMCA(dataset,ncp=5,ind.sup = NULL, quanti.sup = NULL, quali.sup = NULL, axes = c(1, 2), row.w = NULL,signif=FALSE,proba=0.05,report=FALSE,language="english")
+ENMCA(dataset,ncp=5,ind.sup = NULL, quanti.sup = NULL, quali.sup = NULL, axes = c(1, 2), row.w = NULL,level.ventil = 0,signif=FALSE,proba=0.05,report=FALSE,language="english")
 }
 
 \arguments{
@@ -20,6 +20,7 @@ ENMCA(dataset,ncp=5,ind.sup = NULL, quanti.sup = NULL, quali.sup = NULL, axes = 
   \item{quali.sup}{a vector indicating the indexes of the supplementary qualitatives variables} 
   \item{axes}{a length 2 vector specifying the components to plot} 
   \item{row.w}{an optional row weights (by default, uniform row weights)}
+  \item{level.ventil}{a number corresponding to the level under which the category is ventilated; by default 0, and no ventilation is done}  
   \item{signif}{a logical value. If TRUE, a p-value is associated to the 2 first dimensions}
   \item{proba}{Threshold used for the automatic description of the clusters. By default, proba=0.05}
   \item{report}{a logical value. If TRUE, a pdf report is produced using the Sweave package}

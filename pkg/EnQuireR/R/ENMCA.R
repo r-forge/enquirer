@@ -1,5 +1,5 @@
 #ENMCA
-"ENMCA"=function (dataset,ncp=5,ind.sup = NULL, quanti.sup = NULL, quali.sup = NULL, axes = c(1, 2), row.w = NULL,signif=FALSE,proba=0.05,report=FALSE,language="english"){              #num.var=numéros des variables quali, var.class : variable d'intérêt pour catdes
+"ENMCA"=function (dataset,ncp=5,ind.sup = NULL, quanti.sup = NULL, quali.sup = NULL, axes = c(1, 2), row.w = NULL,level.ventil=0,signif=FALSE,proba=0.05,report=FALSE,language="english"){              #num.var=numéros des variables quali, var.class : variable d'intérêt pour catdes
 if(40-length(dev.list())<16){
 print("There are too many devices open. Please close them and launch ENMCA again")
 }else{
@@ -9,7 +9,7 @@ if(report==TRUE){
 }
 fn=function (dataset,ncp,ind.sup,quanti.sup,quali.sup,proba,signif,report){
 
-acm=MCA2(dataset,ncp=ncp,ind.sup=ind.sup,quali.sup=quali.sup,quanti.sup=quanti.sup,graph=FALSE)                                                #ACM
+acm=MCA2(dataset,ncp=ncp,ind.sup=ind.sup,quali.sup=quali.sup,quanti.sup=quanti.sup,level.ventil=level.ventil,graph=FALSE)                                                #ACM
 #ACM sans les éléments supplémentaires
 dataset.min=dataset
 
