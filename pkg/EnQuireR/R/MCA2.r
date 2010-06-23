@@ -3,7 +3,7 @@ MCA2 = function (X, ind.sup = NULL, quanti.sup = NULL, quali.sup = NULL,
 {
     if(length(which(gsub(" ","",unlist(strsplit(summary(X),":")))=="0")>0))
 	  stop("Each level of each categorical variable must be taken by at least 1 individual")
-    if(length(which(gsub(" ","",unlist(strsplit(summary(X),":")))=="100")>0))
+    if(length(which(gsub(" ","",unlist(strsplit(summary(X),":")))==as.character(nrow(X)))>0))
 	  stop("Categorical variables must have at least two levels")
     ventil.tab <- function(tab, level.ventil = 0.05, row.w = NULL, 
         ind.sup = NULL, quali.sup = NULL, quanti.sup = NULL) {
