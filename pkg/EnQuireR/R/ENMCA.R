@@ -1,5 +1,5 @@
 #ENMCA
-"ENMCA"=function (dataset,ncp=5,ind.sup = NULL, quanti.sup = NULL, quali.sup = NULL, axes = c(1, 2), row.w = NULL,level.ventil=0,signif=FALSE,proba=0.05,report=FALSE,language="english"){              #num.var=numéros des variables quali, var.class : variable d'intérêt pour catdes
+"ENMCA"=function (dataset,ind.sup = NULL, quanti.sup = NULL, quali.sup = NULL, axes = c(1, 2), row.w = NULL,level.ventil=0,signif=FALSE,proba=0.05,report=FALSE,language="english"){              #num.var=numéros des variables quali, var.class : variable d'intérêt pour catdes
 if(40-length(dev.list())<16){
 print("There are too many devices open. Please close them and launch ENMCA again")
 }else{
@@ -7,9 +7,9 @@ a=getwd()
 if(report==TRUE){
     dir.create(paste(a,"/EnQuireR/",sep=""))
 }
-fn=function (dataset,ncp,ind.sup,quanti.sup,quali.sup,proba,signif,report){
+fn=function (dataset,ind.sup,quanti.sup,quali.sup,proba,signif,report){
 
-acm=MCA2(dataset,ncp=ncp,ind.sup=ind.sup,quali.sup=quali.sup,quanti.sup=quanti.sup,level.ventil=level.ventil,graph=FALSE)                                                #ACM
+acm=MCA2(dataset,ind.sup=ind.sup,quali.sup=quali.sup,quanti.sup=quanti.sup,level.ventil=level.ventil,graph=FALSE)                                                #ACM
 #ACM sans les éléments supplémentaires
 dataset.min=dataset
 
@@ -27,7 +27,7 @@ else {
 }       
 
 
-acm_ss_clust=MCA2(dataset.min,ncp=ncp,ind.sup=NULL,quali.sup=NULL,quanti.sup=NULL,graph=FALSE)                                                #ACM
+acm_ss_clust=MCA2(dataset.min,ind.sup=NULL,quali.sup=NULL,quanti.sup=NULL,graph=FALSE)                                                #ACM
 if (signif==TRUE){
 res.signif=p_inertia(dataset.min)} #ré-echantillonnage
 
@@ -43,9 +43,9 @@ if(report==TRUE){
     setwd(a)
 }
 if (!is.null(ind.sup)){             #ajout de la variable de classe au jeu de données
-tab2=cbind(dataset[-ind.sup,],group)}
+tab2=cbind(acm$call$X[-ind.sup,],group)}
 else {
-tab2=cbind(dataset,group)}
+tab2=cbind(acm$call$X,group)}
                                               
 res1=catdes(tab2,num.var=ncol(tab2),proba=proba)                                   #description des classes
 if (!is.null(ind.sup)){ 
@@ -214,7 +214,7 @@ tools::texi2dvi(paste(a,"/EnQuireR/Multivariate_report.tex",sep=""), pdf=TRUE)
 setwd(a)
 }
 }
-res=fn(dataset,ncp=ncp,ind.sup=ind.sup,quali.sup=quali.sup,quanti.sup=quanti.sup,proba=proba,signif=signif,report=report)
+res=fn(dataset,ind.sup=ind.sup,quali.sup=quali.sup,quanti.sup=quanti.sup,proba=proba,signif=signif,report=report)
 Sweave_f()
 return(res)
 }

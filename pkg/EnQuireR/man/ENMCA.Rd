@@ -9,12 +9,11 @@ This function allows to perform a cluster analysis following a MCA.
 }
 
 \usage{
-ENMCA(dataset,ncp=5,ind.sup = NULL, quanti.sup = NULL, quali.sup = NULL, axes = c(1, 2), row.w = NULL,level.ventil = 0,signif=FALSE,proba=0.05,report=FALSE,language="english")
+ENMCA(dataset,ind.sup = NULL, quanti.sup = NULL, quali.sup = NULL, axes = c(1, 2), row.w = NULL,level.ventil = 0,signif=FALSE,proba=0.05,report=FALSE,language="english")
 }
 
 \arguments{
   \item{dataset}{current dataset}
-  \item{ncp}{number of dimensions (by fefault, ncp=5)}
   \item{ind.sup}{a vector indicating the indexes of the supplementary individuals}
   \item{quanti.sup}{a vector indicating the indexes of the supplementary quantitatives variables}
   \item{quali.sup}{a vector indicating the indexes of the supplementary qualitatives variables} 

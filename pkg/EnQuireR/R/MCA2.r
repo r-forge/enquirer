@@ -1,103 +1,103 @@
 MCA2 = function (X, ind.sup = NULL, quanti.sup = NULL, quali.sup = NULL, 
     graph = TRUE, level.ventil = 0, axes = c(1, 2), row.w = NULL) 
 {
-    if(length(which(gsub(" ","",unlist(strsplit(summary(X),":")))=="0")>0))
-	  stop("Each level of each categorical variable must be taken by at least 1 individual")
-    if(length(which(gsub(" ","",unlist(strsplit(summary(X),":")))==as.character(nrow(X)))>0))
-	  stop("Categorical variables must have at least two levels")
-    ventil.tab <- function(tab, level.ventil = 0.05, row.w = NULL, 
+dataset <- X
+data2 = matrix(,nrow(X))
+for(i in 1:ncol(X)){
+	if(is.factor(X[,i])){
+		if(length(which(summary(X[,i])==0))>0){
+			print(paste("Category '", names(which(summary(X[,i])==0)),"' is taken by no individual and will be deleted",sep=""))
+			X[,i]=factor(X[,i])
+		}
+		if(length(summary(X[,i]))!=1){
+			data2=cbind.data.frame(data2,X[,i,drop=F])
+		}else{
+			print(paste("Variable '", colnames(X)[i], "' has only one level and will be deleted",sep=""))
+		}
+	}
+}
+X <- data2[,-1]
+ventil.tab <- function(tab, level.ventil = 0.05, row.w = NULL,
         ind.sup = NULL, quali.sup = NULL, quanti.sup = NULL) {
-        col.to.delete <- NULL
-        if (is.null(row.w)) 
-            row.w <- rep(1, nrow(tab))
-        col.var = 1:ncol(tab)
-        if (!is.null(c(quali.sup, quanti.sup))) {
-            tab <- cbind.data.frame(tab[, -c(quali.sup, quanti.sup)], 
-                tab[, c(quali.sup, quanti.sup)])
-            col.var <- 1:(ncol(tab) - length(c(quali.sup, quanti.sup)))
-        }
+        if (is.null(row.w))
+            row.w <- rep(1, nrow(tab) - length(ind.sup))
+        col.var <- 1:ncol(tab)
+        if (!is.null(c(quali.sup, quanti.sup)))
+            col.var = col.var[-c(quali.sup, quanti.sup)]
         for (i in col.var) {
             if (is.factor(tab[, i])) {
-                aux <- ventilation(tab[, i], level.ventil = level.ventil, 
+                tab[, i] <- ventilation(tab[, i], level.ventil = level.ventil,
                   row.w = row.w, ind.sup = ind.sup)
-                if (!is.null(aux)) 
-                  tab[, i] <- aux
-                else col.to.delete <- c(col.to.delete, i)
             }
             if (is.ordered(tab[, i])) {
-                aux <- ventilation.ordonnee(tab[, i], level.ventil = level.ventil, 
+                tab[, i] <- ventilation.ordonnee(tab[, i], level.ventil = level.ventil,
                   row.w = row.w, ind.sup = ind.sup)
-                if (!is.null(aux)) 
-                  tab[, i] <- aux
-                else col.to.delete <- c(col.to.delete, i)
             }
         }
-        if (!is.null(col.to.delete)) {
-            tab <- tab[, -col.to.delete]
-            nb.act <- ncol(tab) - length(c(quali.sup, quanti.sup))
-            if (!is.null(quali.sup)) 
-                quali.sup <- (nb.act + 1):(nb.act + length(quali.sup))
-            if (!is.null(quanti.sup)) 
-                quanti.sup <- (nb.act + length(quali.sup) + 1):(nb.act + 
-                  length(c(quali.sup, quanti.sup)))
-        }
-        res = list()
-        res$ventil = tab
-        res$quali.sup = quali.sup
-        res$quanti.sup = quanti.sup
-        return(res)
+        return(tab)
     }
-    ventilation <- function(Xqual, level.ventil = 0.05, row.w = NULL, 
+    ventilation <- function(Xqual, level.ventil = 0.05, row.w = NULL,
         ind.sup = NULL) {
-        if (!is.factor(Xqual)) 
+        if (!is.factor(Xqual))
             stop("Xqual should be a factor \n")
         modalites <- levels(Xqual)
-        if (length(modalites) <= 1) 
+        if (length(modalites) <= 1)
             stop("not enough levels \n")
-        if (is.null(ind.sup)) 
-            tabl <- table(Xqual)
-        else tabl <- table(Xqual[-ind.sup])
-        if (!is.null(row.w)) {
-            for (j in 1:nlevels(Xqual)) tabl[j] <- sum((Xqual == 
-                levels(Xqual)[j]) * row.w)
+        if (is.null(ind.sup)) {
+            ind.act <- (1:length(Xqual))
         }
-        selecti <- (tabl/sum(tabl)) < level.ventil
-        if (!any(selecti)) 
+        else {
+            ind.act <- (1:length(Xqual))[-ind.sup]
+        }
+        tabl <- table(Xqual[ind.act])
+        if (!is.null(row.w)) {
+            for (j in 1:nlevels(Xqual)) tabl[j] <- sum((Xqual[ind.act] ==
+                levels(Xqual)[j]) * row.w, na.rm = TRUE)
+        }
+        selecti <- (tabl/sum(tabl, na.rm = TRUE)) < level.ventil
+        if (sum(selecti) == length(modalites))
+            return(Xqual)
+        if (!any(selecti))
             return(Xqual)
         else {
             lesquels <- modalites[!selecti]
-            if (length(lesquels) == 1) 
-                return(NULL)
+            if (length(lesquels) == 1)
+                return(Xqual)
             else {
-                prov <- factor(Xqual[(Xqual %in% lesquels)], 
+                prov <- factor(Xqual[(Xqual %in% lesquels)],
                   levels = lesquels)
                 prov <- table(prov)
                 proba <- prov/sum(prov)
                 for (j in modalites[selecti]) {
-                  Xqual[Xqual == j] <- sample(lesquels, sum(Xqual == 
-                    j), replace = T, prob = proba)
+                  Xqual[which(Xqual == j)] <- sample(lesquels,
+                    sum(Xqual == j, na.rm = TRUE), replace = TRUE,
+                    prob = proba)
                 }
                 Xqualvent <- factor(as.character(Xqual))
             }
         }
         return(Xqualvent)
     }
-    ventilation.ordonnee <- function(Xqual, level.ventil = 0.05, 
+    ventilation.ordonnee <- function(Xqual, level.ventil = 0.05,
         ind.sup = NULL, row.w = NULL) {
-        if (!is.ordered(Xqual)) 
+        if (!is.ordered(Xqual))
             stop("Xqual must be ordered \n")
-        modalites <- levels(Xqual)
-        if (length(modalites) <= 1) 
+        mod <- levels(Xqual)
+        if (length(mod) <= 1)
             stop("not enough levels \n")
-        if (is.null(ind.sup)) 
-            tabl <- table(Xqual)
-        else tabl <- table(Xqual[-ind.sup])
+        if (is.null(ind.sup)) {
+            ind.act <- (1:length(Xqual))
+        }
+        else {
+            ind.act <- (1:length(Xqual))[-ind.sup]
+        }
+        tabl <- table(Xqual[ind.act])
         if (!is.null(row.w)) {
-            for (j in 1:nlevels(Xqual)) tabl[j] <- sum((Xqual == 
-                levels(Xqual)[j]) * row.w)
+            for (j in 1:nlevels(Xqual)) tabl[j] <- sum((Xqual[ind.act] ==
+                levels(Xqual)[j]) * row.w, na.rm = TRUE)
         }
         selecti <- (tabl/sum(tabl)) < level.ventil
-        if (!any(selecti)) 
+        if (!any(selecti))
             return(Xqual)
         else {
             numero <- which(selecti)
@@ -105,30 +105,57 @@ MCA2 = function (X, ind.sup = NULL, quanti.sup = NULL, quali.sup = NULL,
                 j <- which(((tabl/sum(tabl)) < level.ventil))[1]
                 K <- length(mod)
                 if (j < K) {
-                  if ((j > 1) & (j < K - 1)) 
-                    levels(Xqual) <- c(mod[1:(j - 1)], paste(mod[j], 
-                      mod[j + 1], sep = "."), paste(mod[j], mod[j + 
+                  if ((j > 1) & (j < K - 1))
+                    levels(Xqual) <- c(mod[1:(j - 1)], paste(mod[j],
+                      mod[j + 1], sep = "."), paste(mod[j], mod[j +
                       1], sep = "."), mod[j + 2:K])
-                  if (j == 1) 
-                    levels(Xqual) <- c(paste(mod[j], mod[j + 
-                      1], sep = "."), paste(mod[j], mod[j + 1], 
+                  if (j == 1)
+                    levels(Xqual) <- c(paste(mod[j], mod[j +
+                      1], sep = "."), paste(mod[j], mod[j + 1],
                       sep = "."), mod[j + 2:K])
-                  if (j == (K - 1)) 
-                    levels(Xqual) <- c(mod[1:(j - 1)], paste(mod[j], 
-                      mod[j + 1], sep = "."), paste(mod[j], mod[j + 
+                  if (j == (K - 1))
+                    levels(Xqual) <- c(mod[1:(j - 1)], paste(mod[j],
+                      mod[j + 1], sep = "."), paste(mod[j], mod[j +
                       1], sep = "."))
                 }
                 else {
-                  levels(Xqual) <- c(mod[1:(j - 2)], paste(mod[j - 
-                    1], mod[j], sep = "."), paste(mod[j - 1], 
+                  levels(Xqual) <- c(mod[1:(j - 2)], paste(mod[j -
+                    1], mod[j], sep = "."), paste(mod[j - 1],
                     mod[j], sep = "."))
                 }
             }
         }
-        if (nlevels(Xqual) > 1) 
-            return(Xqual)
-        else return(NULL)
+        return(Xqual)
     }
+
+tab.disj.prop<-function (tab) 
+{
+    tab <- as.data.frame(tab)
+    modalite.disjonctif <- function(i) {
+        moda <- tab[, i]
+        nom <- names(tab)[i]
+        n <- length(moda)
+        moda <- as.factor(moda)
+        x <- matrix(0, n, length(levels(moda)))
+          ind<-(1:n) + n * (unclass(moda) - 1)
+          indNA<-which(is.na(ind))
+                
+        x[(1:n) + n * (unclass(moda) - 1)] <- 1
+        if (length(indNA)!=0) x[indNA,]<- matrix(rep(apply(x,2,sum)/sum(x),each=length(indNA)),nrow=length(indNA))
+        if ((ncol(tab) != 1) & (levels(moda)[1] %in% c(1:nlevels(moda),"n", "N", "y", "Y"))) 
+            dimnames(x) <- list(row.names(tab), paste(nom, levels(moda),sep = "."))
+        else dimnames(x) <- list(row.names(tab), levels(moda))
+        return(x)
+    }
+    if (ncol(tab) == 1) 
+        res <- modalite.disjonctif(1)
+    else {
+        res <- lapply(1:ncol(tab), modalite.disjonctif)
+        res <- as.matrix(data.frame(res, check.names = FALSE))
+    }
+    return(res)
+}
+
     X <- as.data.frame(X)
     if (is.null(rownames(X))) 
         rownames(X) = 1:nrow(X)
@@ -138,21 +165,27 @@ MCA2 = function (X, ind.sup = NULL, quanti.sup = NULL, quali.sup = NULL,
         colnames(X)[j] = paste("V", j, sep = "")
     for (j in 1:nrow(X)) if (is.null(rownames(X)[j])) 
         rownames(X)[j] = paste("row", j, sep = "")
-    if (level.ventil > 0) {
-        aux <- ventil.tab(X, level.ventil = level.ventil, row.w = row.w, 
-            ind.sup = ind.sup, quali.sup = quali.sup, quanti.sup = quanti.sup)
-        X <- aux$ventil
-        quali.sup <- aux$quali.sup
-        quanti.sup <- aux$quanti.sup
-    }
-    Xtot <- Xact <- X
-    niveau = NULL
-    for (j in 1:ncol(X)) niveau = c(niveau, levels(X[, j]))
+  if (!is.null(ind.sup)) ind.act <- (1:nrow(X))[-ind.sup]
+  else ind.act <- (1:nrow(X))
+  
+  ## avoid problem when a category has 0 individuals
     for (j in 1:ncol(X)) {
-        if (sum(niveau %in% levels(X[, j])) != nlevels(X[, j])) 
-            levels(X[, j]) = paste(colnames(X)[j], levels(X[, 
-                j]), sep = "_")
+      if (!is.numeric(X[,j])) levels(X[,j])[which(table(X[ind.act,j])==0)] <- levels(X[,j])[which(table(X[ind.act,j])!=0)[1]]
     }
+              
+    if (level.ventil > 0) X <- ventil.tab(X,level.ventil=level.ventil,row.w=row.w,ind.sup=ind.sup,quali.sup=quali.sup,quanti.sup=quanti.sup)
+
+  niveau <- NULL
+  for (j in 1:ncol(X)) niveau = c(niveau, levels(X[, j]))
+  for (j in 1:ncol(X)) {
+      if (sum(niveau %in% levels(X[, j])) != nlevels(X[, j])) levels(X[, j]) = paste(colnames(X)[j], levels(X[, j]), sep = "_")
+  }
+
+#nonact <- c(quanti.sup,quali.sup)
+#if (!is.null(nonact)) act <- (1:ncol(X))[-nonact]
+#else act <- (1:ncol(X))
+    
+    Xtot <- Xact <- X
     col.sup <- NULL
     if (!is.null(quali.sup)) {
         Zqs <- tab.disjonctif(X[, quali.sup])
@@ -190,7 +223,7 @@ MCA2 = function (X, ind.sup = NULL, quanti.sup = NULL, quali.sup = NULL,
                 (nrow(X))), col.w = poids_c/((nrow(X)) * (ncol(X) - 
                 length(quali.sup) - length(quanti.sup))), scale.unit = F, 
                 graph = F)
-            colnames(res.mca$ind$coord) = paste("Dim ", 1:ncp, 
+            colnames(res.mca$ind$coord) = paste("Dim ", 1:ncol(res.mca$ind$coord), 
                 sep = "")
             res.mca$var[2] = res.mca$var[4]
             names(res.mca$var[2]) = names(res.mca$var[4])
