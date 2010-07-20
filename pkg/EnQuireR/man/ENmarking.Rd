@@ -20,6 +20,7 @@ ENmarking(dataset,var.int,proba=0.05)
 
 
 \author{
+Sebastien Le \email{sebastien.le@agrocampus-ouest.fr} \cr
 Jerome Bouche \email{jerome.bouche@yahoo.fr} \cr
 Gwenaelle Fournier \email{gwenaelle.fournier@gmail.com} \cr
 Olivier Fournier \email{olivier.fournier76@gmail.com} \cr

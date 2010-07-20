@@ -25,10 +25,12 @@ LazyLoad: \tab yes\cr
 }
 }
 \author{
-Who wrote it
-
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
+Sebastien Le \email{sebastien.le@agrocampus-ouest.fr} \cr
+Jerome Bouche \email{jerome.bouche@yahoo.fr} \cr
+Marine Cadoret \email{marine.cadoret@agrocampus-ouest.fr} \cr
+Gwenaelle Fournier \email{gwenaelle.fournier@gmail.com} \cr
+Olivier Fournier \email{olivier.fournier76@gmail.com} \cr
+Francois Le Poder \email{francois.lepoder@gmail.com}
 }
 
 

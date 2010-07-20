@@ -31,6 +31,7 @@ when the chosen categorical variable is the variable obtained after the cluster 
 
 
 \author{
+Sebastien Le \email{sebastien.le@agrocampus-ouest.fr} \cr
 Jerome Bouche \email{jerome.bouche@yahoo.fr} \cr
 Marine Cadoret \email{marine.cadoret@agrocampus-ouest.fr} \cr
 Gwenaelle Fournier \email{gwenaelle.fournier@gmail.com} \cr

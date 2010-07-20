@@ -57,6 +57,7 @@ according to the values of the categories of the other variable.
 }
 
 \author{ 
+Sebastien Le \email{sebastien.le@agrocampus-ouest.fr} \cr
 Jerome Bouche \email{jerome.bouche@yahoo.fr} \cr
 Marine Cadoret \email{marine.cadoret@agrocampus-ouest.fr} \cr
 Gwenaelle Fournier \email{gwenaelle.fournier@gmail.com} \cr
